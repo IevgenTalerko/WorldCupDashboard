@@ -5,9 +5,11 @@ namespace WorldCupLibrary.MatchBoard;
 
 public class MatchBoardService : IMatchBoardService
 {
+    private readonly IMatchBoardValidator _matchBoardValidator = new MatchBoardValidator();
+
     public Guid StartMatch(int homeTeamId, int awayTeamId)
     {
-        ValidateStartMatch(homeTeamId, awayTeamId);
+        _matchBoardValidator.ValidateStartMatch(homeTeamId, awayTeamId);
         
         var newMatch = new Match
         {
@@ -28,7 +30,7 @@ public class MatchBoardService : IMatchBoardService
     public void UpdateScore(Guid matchId, int homeTeamGoals, int awayTeamGoals)
     {
         var matchToUpdate = LocalStorage.Matches.SingleOrDefault(x => x.Id == matchId);
-        ValidateUpdateScore(matchToUpdate, homeTeamGoals, awayTeamGoals);
+        _matchBoardValidator.ValidateUpdateScore(matchToUpdate, homeTeamGoals, awayTeamGoals);
         
         matchToUpdate.HomeTeamGoals = homeTeamGoals;
         matchToUpdate.AwayTeamGoals = awayTeamGoals;
@@ -37,7 +39,7 @@ public class MatchBoardService : IMatchBoardService
     public void FinishMatch(Guid matchId)
     {
         var matchToFinish = LocalStorage.Matches.SingleOrDefault(x => x.Id == matchId);
-        ValidateMatchExists(matchToFinish);
+        _matchBoardValidator.ValidateMatchExists(matchToFinish);
         
         matchToFinish.Status = MatchStatus.Finished;
     }
@@ -49,39 +51,5 @@ public class MatchBoardService : IMatchBoardService
             .OrderByDescending(x => x.HomeTeamGoals + x.AwayTeamGoals)
             .ThenByDescending(x => x.StartedOn)
             .ToList();
-    }
-
-    private void ValidateStartMatch(int homeTeamId, int awayTeamId)
-    {
-        if (IsMatchInProgressForTeam(homeTeamId) || IsMatchInProgressForTeam(awayTeamId))
-            throw new InvalidOperationException(Constants.ValidationMessages.OneMatchInProgress);
-    }
-
-    private bool IsMatchInProgressForTeam(int teamId)
-    {
-        return LocalStorage.Matches.Any(x =>
-            (x.HomeTeamId == teamId || x.AwayTeamId == teamId) && x.Status == MatchStatus.Started);
-    }
-    
-    private void ValidateUpdateScore(Match? match, int homeTeamGoals, int awayTeamGoals)
-    {
-        ValidateMatchExists(match);
-
-        if (match.Status != MatchStatus.Started)
-            throw new InvalidOperationException(Constants.ValidationMessages.StartedStatus);
-
-        if (Math.Abs(match.HomeTeamGoals - homeTeamGoals) > 1 ||
-            Math.Abs(match.AwayTeamGoals - awayTeamGoals) > 1)
-            throw new InvalidOperationException(Constants.ValidationMessages.CantAddMoreThanOneGoal);
-        
-        if (match.HomeTeamGoals != homeTeamGoals &&
-            match.AwayTeamGoals != awayTeamGoals)
-            throw new InvalidOperationException(Constants.ValidationMessages.CantUpdateBothTeams);
-    }
-
-    private void ValidateMatchExists(Match? match)
-    {
-        if (match is null)
-            throw new ArgumentException(Constants.ValidationMessages.MatchNotFound);
     }
 }
