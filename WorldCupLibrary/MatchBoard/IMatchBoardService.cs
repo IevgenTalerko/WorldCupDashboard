@@ -1,5 +1,4 @@
 ﻿using WorldCupLibrary.Entities;
-using Match = System.Text.RegularExpressions.Match;
 
 namespace WorldCupLibrary.MatchBoard;
 

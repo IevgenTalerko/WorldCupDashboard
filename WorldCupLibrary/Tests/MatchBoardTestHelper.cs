@@ -4,7 +4,7 @@ namespace WorldCupLibrary.Tests;
 
 public static class MatchBoardTestHelper
 {
-    public static Match CreateMatch(this LocalStorage storage, Action<Match> overrides = null)
+    public static Match CreateMatch(Action<Match> overrides = null)
     {
         Match match = new()
         {
@@ -17,7 +17,7 @@ public static class MatchBoardTestHelper
         };
 
         overrides?.Invoke(match);
-        storage.Matches.Add(match);
+        LocalStorage.Matches.Add(match);
 
         return match;
     }

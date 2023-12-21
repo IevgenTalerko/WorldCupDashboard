@@ -1,8 +1,8 @@
 ﻿namespace WorldCupLibrary.Entities;
 
-public class LocalStorage
+public static class LocalStorage
 {
-    public List<Team> Teams { get; set; } = new()
+    public static List<Team> Teams { get; set; } = new()
     {
         new Team { Id = 1, Name = "England" },
         new Team { Id = 2, Name = "Germany" },
@@ -14,5 +14,5 @@ public class LocalStorage
         new Team { Id = 8, Name = "Netherlands" },
     };
 
-    public List<Match> Matches { get; set; } = new();
+    public static List<Match> Matches { get; set; } = new();
 }
