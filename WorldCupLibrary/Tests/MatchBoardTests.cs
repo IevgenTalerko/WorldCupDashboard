@@ -153,7 +153,8 @@ public class MatchBoardTests
         var matches = _matchBoardService.GetMatchesInProgress();
         
         // Assert
-        matches.Should().BeEquivalentTo(new List<Match> { match3, match2, match1 });
+        matches.Select(x => x.Id).ToArray()
+            .Should().BeEquivalentTo(new [] { match3.Id, match2.Id, match1.Id });
     }
 
     [Fact]
@@ -181,7 +182,8 @@ public class MatchBoardTests
         var matches = _matchBoardService.GetMatchesInProgress();
         
         // Assert
-        matches.Should().BeEquivalentTo(new List<Match> { match2, match1 });
+        matches.Select(x => x.Id).ToArray()
+            .Should().BeEquivalentTo(new [] { match2.Id, match1.Id });
     }
 
     [Fact]
@@ -200,7 +202,8 @@ public class MatchBoardTests
         var matches = _matchBoardService.GetMatchesInProgress();
         
         // Assert
-        matches.Should().BeEquivalentTo(new List<Match> { match1 });
+        var match = matches.Single();
+        match.Id.Should().Be(match1.Id);
     }
 
     [Fact]
@@ -224,5 +227,13 @@ public class MatchBoardTests
             .Should().Throw<ArgumentException>()
             .WithMessage(Constants.ValidationMessages.MatchNotFound);
 
+    }
+
+    [Fact]
+    public void ItFailsToStartMatchIfTeamDoesNotExist()
+    {
+        _matchBoardService.Invoking(x => x.StartMatch(55, 33))
+            .Should().Throw<ArgumentException>()
+            .WithMessage(Constants.ValidationMessages.TeamNotFound);
     }
 }

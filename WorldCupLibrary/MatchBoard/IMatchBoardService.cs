@@ -1,4 +1,4 @@
-﻿using WorldCupLibrary.Entities;
+﻿using WorldCupLibrary.Models;
 
 namespace WorldCupLibrary.MatchBoard;
 
@@ -10,5 +10,5 @@ public interface IMatchBoardService
 
     void FinishMatch(Guid matchId);
 
-    List<Match> GetMatchesInProgress();
+    List<MatchModel> GetMatchesInProgress();
 }

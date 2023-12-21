@@ -6,6 +6,9 @@ internal class MatchBoardValidator : IMatchBoardValidator
 {
     public void ValidateStartMatch(int homeTeamId, int awayTeamId)
     {
+        ValidateTeamExists(homeTeamId);
+        ValidateTeamExists(awayTeamId);
+        
         if (IsMatchInProgressForTeam(homeTeamId) || IsMatchInProgressForTeam(awayTeamId))
             throw new InvalidOperationException(Constants.ValidationMessages.OneMatchInProgress);
     }
@@ -31,7 +34,13 @@ internal class MatchBoardValidator : IMatchBoardValidator
         if (match is null)
             throw new ArgumentException(Constants.ValidationMessages.MatchNotFound);
     }
-    
+
+    private void ValidateTeamExists(int teamId)
+    {
+        if (!LocalStorage.Teams.Any(x => x.Id == teamId))
+            throw new ArgumentException(Constants.ValidationMessages.TeamNotFound);
+    }
+
     private bool IsMatchInProgressForTeam(int teamId)
     {
         return LocalStorage.Matches.Any(x =>

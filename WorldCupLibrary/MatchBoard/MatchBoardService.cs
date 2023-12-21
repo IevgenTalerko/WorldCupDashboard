@@ -1,4 +1,5 @@
 ﻿using WorldCupLibrary.Entities;
+using WorldCupLibrary.Models;
 using Match = WorldCupLibrary.Entities.Match;
 
 namespace WorldCupLibrary.MatchBoard;
@@ -44,12 +45,23 @@ public class MatchBoardService : IMatchBoardService
         matchToFinish.Status = MatchStatus.Finished;
     }
 
-    public List<Match> GetMatchesInProgress()
+    public List<MatchModel> GetMatchesInProgress()
     {
         return LocalStorage.Matches
             .Where(x => x.Status == MatchStatus.Started)
+            .Select(x => new MatchModel
+            {
+                Id = x.Id,
+                StartedOn = x.StartedOn,
+                AwayTeamGoals = x.AwayTeamGoals,
+                HomeTeamGoals = x.HomeTeamGoals,
+                AwayTeamName = GetTeamNameById(x.AwayTeamId),
+                HomeTeamName = GetTeamNameById(x.HomeTeamId)
+            })
             .OrderByDescending(x => x.HomeTeamGoals + x.AwayTeamGoals)
             .ThenByDescending(x => x.StartedOn)
             .ToList();
     }
+
+    private string GetTeamNameById(int id) => LocalStorage.Teams.Single(x => x.Id == id).Name;
 }
