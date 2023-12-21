@@ -5,7 +5,7 @@ namespace WorldCupLibrary.MatchBoard;
 
 public interface IMatchBoardService
 {
-    void StartMatch(int homeTeamId, int awayTeamId);
+    Guid StartMatch(int homeTeamId, int awayTeamId);
 
     void UpdateScore(Guid matchId, int homeTeamGoals, int awayTeamGoals);
 

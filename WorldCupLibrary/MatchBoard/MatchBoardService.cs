@@ -4,7 +4,7 @@ namespace WorldCupLibrary.MatchBoard;
 
 public class MatchBoardService : IMatchBoardService
 {
-    public void StartMatch(int homeTeamId, int awayTeamId)
+    public Guid StartMatch(int homeTeamId, int awayTeamId)
     {
         throw new NotImplementedException();
     }

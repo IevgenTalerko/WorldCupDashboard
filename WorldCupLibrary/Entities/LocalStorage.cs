@@ -14,11 +14,5 @@ public class LocalStorage
         new Team { Id = 8, Name = "Netherlands" },
     };
 
-    public List<Match> Matches { get; set; } = new()
-    {
-        new Match { Id = Guid.NewGuid(), HomeTeamId = 1, AwayTeamId = 5, HomeTeamGoals = 3, AwayTeamGoals = 0, Status = MatchStatus.Finished, StartedOn = DateTime.Now.AddHours(-1)},
-        new Match { Id = Guid.NewGuid(), HomeTeamId = 2, AwayTeamId = 6, HomeTeamGoals = 1, AwayTeamGoals = 4, Status = MatchStatus.Finished, StartedOn = DateTime.Now.AddHours(-1) },
-        new Match { Id = Guid.NewGuid(), HomeTeamId = 3, AwayTeamId = 7, HomeTeamGoals = 2, AwayTeamGoals = 3, Status = MatchStatus.Finished, StartedOn = DateTime.Now.AddHours(-1) },
-        new Match { Id = Guid.NewGuid(), HomeTeamId = 4, AwayTeamId = 8, HomeTeamGoals = 0, AwayTeamGoals = 1, Status = MatchStatus.Finished, StartedOn = DateTime.Now.AddHours(-1) },
-    };
+    public List<Match> Matches { get; set; } = new();
 }
