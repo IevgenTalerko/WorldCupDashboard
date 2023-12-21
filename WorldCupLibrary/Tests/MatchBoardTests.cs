@@ -9,6 +9,11 @@ public class MatchBoardTests
 {
     private readonly IMatchBoardService _matchBoardService = new MatchBoardService();
 
+    public MatchBoardTests()
+    {
+        LocalStorage.Initilize();
+    }
+
     [Fact]
     public void ItStartsMatch()
     {
@@ -36,8 +41,9 @@ public class MatchBoardTests
         var match = MatchBoardTestHelper.CreateMatch();
         
         // Act
-        var matchId = _matchBoardService.Invoking(x => x.StartMatch(match.HomeTeamId, match.AwayTeamId))
-            .Should().Throw<InvalidOperationException>("Only one match for the team can be in progress");
+        _matchBoardService.Invoking(x => x.StartMatch(match.HomeTeamId, match.AwayTeamId))
+            .Should().Throw<InvalidOperationException>()
+            .WithMessage("Only one match for the team can be in progress");
     }
 
     [Fact]
@@ -55,7 +61,7 @@ public class MatchBoardTests
         // Assert
         var matchUpdated = LocalStorage.Matches.Single(x => x.Id == match.Id);
         matchUpdated.HomeTeamGoals.Should().Be(homeTeamGoals);
-        matchUpdated.AwayTeamGoals.Should().Be(homeTeamGoals);
+        matchUpdated.AwayTeamGoals.Should().Be(awayTeamGoals);
     }
 
     [Fact]
@@ -69,7 +75,8 @@ public class MatchBoardTests
         
         // Act
         _matchBoardService.Invoking(x =>x.UpdateScore(match.Id, homeTeamGoals, awayTeamGoals))
-            .Should().Throw<InvalidOperationException>("Only matches with Started status can be updated");
+            .Should().Throw<InvalidOperationException>()
+            .WithMessage("Only matches with Started status can be updated");
     }
 
     [Fact]
@@ -83,7 +90,8 @@ public class MatchBoardTests
         
         // Act
         _matchBoardService.Invoking(x =>x.UpdateScore(match.Id, homeTeamGoals, awayTeamGoals))
-            .Should().Throw<InvalidOperationException>("Can't update both teams score in one operation");
+            .Should().Throw<InvalidOperationException>()
+            .WithMessage("Can't update both teams score in one operation");
     }
 
     [Fact]
@@ -97,7 +105,8 @@ public class MatchBoardTests
         
         // Act
         _matchBoardService.Invoking(x =>x.UpdateScore(match.Id, homeTeamGoals, awayTeamGoals))
-            .Should().Throw<InvalidOperationException>("Can't add more than one goal in one operation");
+            .Should().Throw<InvalidOperationException>()
+            .WithMessage("Can't add more than one goal in one operation");
     }
 
     [Fact]
@@ -192,6 +201,28 @@ public class MatchBoardTests
         
         // Assert
         matches.Should().BeEquivalentTo(new List<Match> { match1 });
+    }
+
+    [Fact]
+    public void ItFailsWhenTryToUpdateNotExistingMatch()
+    {
+        // Arrange
+        var homeTeamGoals = 1;
+        var awayTeamGoals = 0;
+        
+        // Act
+        _matchBoardService.Invoking(x => x.UpdateScore(Guid.NewGuid(), homeTeamGoals, awayTeamGoals))
+            .Should().Throw<ArgumentException>()
+            .WithMessage("Match wasn't found");
+    }
+
+    [Fact]
+    public void ItFailsWhenTryToFinishNotExistingMatch()
+    {
+        // Act
+        _matchBoardService.Invoking(x => x.FinishMatch(Guid.NewGuid()))
+            .Should().Throw<ArgumentException>()
+            .WithMessage("Match wasn't found");
 
     }
 }

@@ -7,6 +7,8 @@ public class MatchBoardService : IMatchBoardService
 {
     public Guid StartMatch(int homeTeamId, int awayTeamId)
     {
+        ValidateStartMatch(homeTeamId, awayTeamId);
+        
         var newMatch = new Match
         {
             Id = Guid.NewGuid(),
@@ -43,5 +45,17 @@ public class MatchBoardService : IMatchBoardService
             .OrderByDescending(x => x.HomeTeamGoals + x.AwayTeamGoals)
             .ThenByDescending(x => x.StartedOn)
             .ToList();
+    }
+
+    private void ValidateStartMatch(int homeTeamId, int awayTeamId)
+    {
+        if (IsMatchInProgressForTeam(homeTeamId) || IsMatchInProgressForTeam(awayTeamId))
+            throw new InvalidOperationException("Only one match for the team can be in progress");
+    }
+
+    private bool IsMatchInProgressForTeam(int teamId)
+    {
+        return LocalStorage.Matches.Any(x =>
+            (x.HomeTeamId == teamId || x.AwayTeamId == teamId) && x.Status == MatchStatus.Started);
     }
 }
