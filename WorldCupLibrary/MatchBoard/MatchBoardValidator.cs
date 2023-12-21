@@ -2,7 +2,7 @@
 
 namespace WorldCupLibrary.MatchBoard;
 
-public class MatchBoardValidator : IMatchBoardValidator
+internal class MatchBoardValidator : IMatchBoardValidator
 {
     public void ValidateStartMatch(int homeTeamId, int awayTeamId)
     {
