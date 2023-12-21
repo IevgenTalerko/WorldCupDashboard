@@ -54,7 +54,7 @@ public class MatchBoardService : IMatchBoardService
     private void ValidateStartMatch(int homeTeamId, int awayTeamId)
     {
         if (IsMatchInProgressForTeam(homeTeamId) || IsMatchInProgressForTeam(awayTeamId))
-            throw new InvalidOperationException("Only one match for the team can be in progress");
+            throw new InvalidOperationException(Constants.ValidationMessages.OneMatchInProgress);
     }
 
     private bool IsMatchInProgressForTeam(int teamId)
@@ -68,20 +68,20 @@ public class MatchBoardService : IMatchBoardService
         ValidateMatchExists(match);
 
         if (match.Status != MatchStatus.Started)
-            throw new InvalidOperationException("Only matches with Started status can be updated");
+            throw new InvalidOperationException(Constants.ValidationMessages.StartedStatus);
 
         if (Math.Abs(match.HomeTeamGoals - homeTeamGoals) > 1 ||
             Math.Abs(match.AwayTeamGoals - awayTeamGoals) > 1)
-            throw new InvalidOperationException("Can't add more than one goal in one operation");
+            throw new InvalidOperationException(Constants.ValidationMessages.CantAddMoreThanOneGoal);
         
         if (match.HomeTeamGoals != homeTeamGoals &&
             match.AwayTeamGoals != awayTeamGoals)
-            throw new InvalidOperationException("Can't update both teams score in one operation");
+            throw new InvalidOperationException(Constants.ValidationMessages.CantUpdateBothTeams);
     }
 
     private void ValidateMatchExists(Match? match)
     {
         if (match is null)
-            throw new ArgumentException("Match wasn't found");
+            throw new ArgumentException(Constants.ValidationMessages.MatchNotFound);
     }
 }

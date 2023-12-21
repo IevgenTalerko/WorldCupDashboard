@@ -43,7 +43,7 @@ public class MatchBoardTests
         // Act
         _matchBoardService.Invoking(x => x.StartMatch(match.HomeTeamId, match.AwayTeamId))
             .Should().Throw<InvalidOperationException>()
-            .WithMessage("Only one match for the team can be in progress");
+            .WithMessage(Constants.ValidationMessages.OneMatchInProgress);
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public class MatchBoardTests
         // Act
         _matchBoardService.Invoking(x =>x.UpdateScore(match.Id, homeTeamGoals, awayTeamGoals))
             .Should().Throw<InvalidOperationException>()
-            .WithMessage("Only matches with Started status can be updated");
+            .WithMessage(Constants.ValidationMessages.StartedStatus);
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class MatchBoardTests
         // Act
         _matchBoardService.Invoking(x =>x.UpdateScore(match.Id, homeTeamGoals, awayTeamGoals))
             .Should().Throw<InvalidOperationException>()
-            .WithMessage("Can't update both teams score in one operation");
+            .WithMessage(Constants.ValidationMessages.CantUpdateBothTeams);
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public class MatchBoardTests
         // Act
         _matchBoardService.Invoking(x =>x.UpdateScore(match.Id, homeTeamGoals, awayTeamGoals))
             .Should().Throw<InvalidOperationException>()
-            .WithMessage("Can't add more than one goal in one operation");
+            .WithMessage(Constants.ValidationMessages.CantAddMoreThanOneGoal);
     }
 
     [Fact]
@@ -213,7 +213,7 @@ public class MatchBoardTests
         // Act
         _matchBoardService.Invoking(x => x.UpdateScore(Guid.NewGuid(), homeTeamGoals, awayTeamGoals))
             .Should().Throw<ArgumentException>()
-            .WithMessage("Match wasn't found");
+            .WithMessage(Constants.ValidationMessages.MatchNotFound);
     }
 
     [Fact]
@@ -222,7 +222,7 @@ public class MatchBoardTests
         // Act
         _matchBoardService.Invoking(x => x.FinishMatch(Guid.NewGuid()))
             .Should().Throw<ArgumentException>()
-            .WithMessage("Match wasn't found");
+            .WithMessage(Constants.ValidationMessages.MatchNotFound);
 
     }
 }
