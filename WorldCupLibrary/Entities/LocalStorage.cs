@@ -8,18 +8,28 @@ public static class LocalStorage
 
     public static void Initilize()
     {
-        Teams = new()
+        Teams = new List<Team>();
+        foreach (var name in Enum.GetNames(typeof(KnownTeams)))
         {
-            new Team { Id = 1, Name = "England" },
-            new Team { Id = 2, Name = "Germany" },
-            new Team { Id = 3, Name = "France" },
-            new Team { Id = 4, Name = "Spain" },
-            new Team { Id = 5, Name = "Brazil" },
-            new Team { Id = 6, Name = "Argentina" },
-            new Team { Id = 7, Name = "Italy" },
-            new Team { Id = 8, Name = "Netherlands" },
-        };
+            Teams.Add(new Team
+            {
+                Id = (int)Enum.Parse(typeof(KnownTeams), name),
+                Name = name
+            });
+        }
         
         Matches = new List<Match>();
     }
+}
+
+enum KnownTeams
+{
+    England = 1,
+    Germany = 2, 
+    France = 3,
+    Spain = 4,
+    Brazil = 5,
+    Argentina = 6,
+    Italy = 7,
+    Netherlands = 8
 }

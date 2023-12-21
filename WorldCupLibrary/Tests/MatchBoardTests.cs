@@ -129,22 +129,22 @@ public class MatchBoardTests
         // Arrange
         var match1 = MatchBoardTestHelper.CreateMatch(x =>
         {
-            x.HomeTeamId = 1;
-            x.AwayTeamId = 2;
+            x.HomeTeamId = (int)KnownTeams.England;
+            x.AwayTeamId = (int)KnownTeams.Germany;
             x.HomeTeamGoals = 0;
             x.AwayTeamGoals = 0;
         });
         var match2 = MatchBoardTestHelper.CreateMatch(x =>
         {
-            x.HomeTeamId = 3;
-            x.AwayTeamId = 4;
+            x.HomeTeamId = (int)KnownTeams.France;
+            x.AwayTeamId = (int)KnownTeams.Spain;
             x.HomeTeamGoals = 1;
             x.AwayTeamGoals = 2;
         });
         var match3 = MatchBoardTestHelper.CreateMatch(x =>
         {
-            x.HomeTeamId = 5;
-            x.AwayTeamId = 6;
+            x.HomeTeamId = (int)KnownTeams.Brazil;
+            x.AwayTeamId = (int)KnownTeams.Italy;
             x.HomeTeamGoals = 2;
             x.AwayTeamGoals = 3;
         });
@@ -163,16 +163,16 @@ public class MatchBoardTests
         // Arrange
         var match1 = MatchBoardTestHelper.CreateMatch(x =>
         {
-            x.HomeTeamId = 1;
-            x.AwayTeamId = 2;
+            x.HomeTeamId = (int)KnownTeams.England;
+            x.AwayTeamId = (int)KnownTeams.Germany;
             x.HomeTeamGoals = 2;
             x.AwayTeamGoals = 0;
             x.StartedOn = DateTime.Now.AddMinutes(-30);
         });
         var match2 = MatchBoardTestHelper.CreateMatch(x =>
         {
-            x.HomeTeamId = 3;
-            x.AwayTeamId = 4;
+            x.HomeTeamId = (int)KnownTeams.France;
+            x.AwayTeamId = (int)KnownTeams.Spain;
             x.HomeTeamGoals = 1;
             x.AwayTeamGoals = 1;
             x.StartedOn = DateTime.Now.AddMinutes(-60);
@@ -193,8 +193,8 @@ public class MatchBoardTests
         var match1 = MatchBoardTestHelper.CreateMatch();
         var match2 = MatchBoardTestHelper.CreateMatch(x =>
         {
-            x.HomeTeamId = 3;
-            x.AwayTeamId = 4;
+            x.HomeTeamId = (int)KnownTeams.France;
+            x.AwayTeamId = (int)KnownTeams.Spain;
             x.Status = MatchStatus.Finished;
         });
         
@@ -235,5 +235,24 @@ public class MatchBoardTests
         _matchBoardService.Invoking(x => x.StartMatch(55, 33))
             .Should().Throw<ArgumentException>()
             .WithMessage(Constants.ValidationMessages.TeamNotFound);
+    }
+
+    [Fact]
+    public void ItReturnsTeamsWithTheirNames()
+    {
+        // Arrange
+        MatchBoardTestHelper.CreateMatch(x =>
+        {
+            x.HomeTeamId = (int)KnownTeams.France;
+            x.AwayTeamId = (int)KnownTeams.Spain;
+        });
+        
+        // Act
+        var matches = _matchBoardService.GetMatchesInProgress();
+        
+        // Assert
+        var match = matches.Single();
+        match.HomeTeamName.Should().Be(KnownTeams.France.ToString());
+        match.AwayTeamName.Should().Be(KnownTeams.Spain.ToString());
     }
 }
